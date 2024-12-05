@@ -1,5 +1,7 @@
 mod day3;
+mod day4;
 
+use std::fs;
 fn main() {
     // Day 1
     /*
@@ -14,12 +16,24 @@ fn main() {
      */
 
     // Day 2
-    // let path = "day2.txt";
+    // let path = "guido.txt";
     // let Ok(mut vectors) = parse_file_to_vectors(path) else {todo!()};
-    // println!("Safety amount: {}", check_safety_amount(&vectors));
+    // println!("Safety amount: {}", &vectors.iter().filter(|v| is_safe(v)).count());
     // println!("Safety amount: {}", safety_with_problem_dampener(&mut vectors));
 
-    day3::foo();
+    // Day 3
+    // day3::foo();
+
+    //Day 4
+    let path = "day4.txt";
+    let day_4_input = &fs::read_to_string(path).expect("Unable to read the file");
+    let vector = day_4_input.lines()              // Split the string into an iterator of lines
+    .map(|line| line.chars().collect()) // Convert each line into a Vec<char>
+    .collect();
+    let match_amount = day4::find_matches_amount("XMAS", &vector);
+    println!("Match amount: {}", match_amount);
+
+    println!("Match amount of X-MAS: {}", day4::find_matches_amount_on_x(&vector));
 
 }
 // This should be day 1, at least
@@ -81,16 +95,16 @@ fn parse_file_to_vectors(file_path: &str) -> io::Result<Vec<Vec<i32>>> {
 }
 
 fn is_safe(vector: &Vec<i32>) -> bool {
-    let is_decreasing = vector[0] < vector[1];
+    let is_increasing = vector[0] < vector[1];
     for i in 0..vector.len() {
         if i + 1 >= vector.len() {
             return true;
         }
-        if is_decreasing && vector[i] > vector[i + 1] {
+        if is_increasing && vector[i] > vector[i + 1] {
             return false;
         }
-        if !is_decreasing && vector[i] < vector[i + 1] {
-            return false;
+        if !is_increasing && vector[i] < vector[i + 1] {
+             return false;
         }
         let difference = (vector[i] - vector[i + 1]).abs();
         if difference < 1 || difference > 3 {
